@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------------------------------------
-🎯 ATELIER RENDER
+🎯 ATELIER RENDER - Pénélope FILLON
 ------------------------------------------------------------------------------------------------------
 L’idée en 30 secondes : Dans cet atelier, vous allez construire une **chaîne DevOps complète de bout en bout**. À partir d’une **application Flask**, vous allez **créer une image Docker**, la publier dans un registre, puis **automatiser son déploiement dans le cloud** avec **GitHub Actions** et utiliser **Terraform pour créer un service Render**. L’objectif est de comprendre comment passer du code à une application accessible en ligne, de manière industrielle, reproductible et sans intervention manuelle. À la fin, chacun de vous aura sa propre application déployée en production.
   
@@ -49,7 +49,7 @@ Vous avez vu dans cette séquence comment créer des secrets GiHUB afin de mettr
 Objectif : Déployer votre service web Render  
 Difficulté : Faible (~10 minutes)
 ---------------------------------------------------
-Procédez à la modification de ce README.md (ex: Mon NOM Prénom ici) et Commitez. La création du Service Web Render est automatique.  
+Procédez à la modification de ce README.md (ex: FILLON Pénélope) et Commitez. La création du Service Web Render est automatique.  
 
 <img width="2150" height="616" alt="image" src="https://github.com/user-attachments/assets/7254a9c4-1bc7-4338-b25e-cad8259d396b" />  
 
