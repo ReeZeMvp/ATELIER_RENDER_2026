@@ -41,34 +41,52 @@ jobs:
           echo "Using Render service name: ${SERVICE_NAME}"
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
-      - name: Delete existing Render service if present
+      - name: Delete ALL existing Render services for this project
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          SERVICE_NAME: ${{ env.SERVICE_NAME }}
         run: |
           RESPONSE=$(curl -s \
             -H "Authorization: Bearer ${RENDER_API_KEY}" \
             https://api.render.com/v1/services)
-          echo "Services returned by Render:"
-          echo "$RESPONSE" | jq -r '.[] | select(.service != null) | .service.name'
-          SERVICE_ID=$(echo "$RESPONSE" \
-            | jq -r --arg NAME "$SERVICE_NAME" '
-                .[]
-                | select(type=="object" and .service != null)
-                | select(.service.name == $NAME)
-                | .service.id
-              ' \
-            | head -n 1)
-          if [ -z "$SERVICE_ID" ] || [ "$SERVICE_ID" = "null" ]; then
-            echo "No existing Render service named ${SERVICE_NAME}. Nothing to delete."
+
+          echo "All Render services:"
+          echo "$RESPONSE" | jq -r '.[] | select(.service != null) | "\(.service.name) (\(.service.id))"'
+
+          # Extraire TOUS les IDs de services
+          SERVICE_IDS=$(echo "$RESPONSE" \
+            | jq -r '.[] | select(type=="object" and .service != null) | .service.id')
+
+          if [ -z "$SERVICE_IDS" ]; then
+            echo "No existing Render services found. Nothing to delete."
           else
-            echo "Deleting existing Render service: ${SERVICE_NAME} (${SERVICE_ID})"
-            curl -s -X DELETE \
-              -H "Authorization: Bearer ${RENDER_API_KEY}" \
-              "https://api.render.com/v1/services/${SERVICE_ID}"
+            for SID in $SERVICE_IDS; do
+              echo "Deleting service: ${SID}"
+              curl -s -X DELETE \
+                -H "Authorization: Bearer ${RENDER_API_KEY}" \
+                "https://api.render.com/v1/services/${SID}"
+            done
           fi
-      - name: Wait after delete
-        run: sleep 10
+
+          # Supprimer aussi les bases de données PostgreSQL
+          DB_RESPONSE=$(curl -s \
+            -H "Authorization: Bearer ${RENDER_API_KEY}" \
+            https://api.render.com/v1/postgres)
+
+          DB_IDS=$(echo "$DB_RESPONSE" \
+            | jq -r '.[] | select(type=="object" and .postgres != null) | .postgres.id')
+
+          if [ -z "$DB_IDS" ]; then
+            echo "No existing Render databases found."
+          else
+            for DID in $DB_IDS; do
+              echo "Deleting database: ${DID}"
+              curl -s -X DELETE \
+                -H "Authorization: Bearer ${RENDER_API_KEY}" \
+                "https://api.render.com/v1/postgres/${DID}"
+            done
+          fi
+      - name: Wait after delete (Rajout de temps vu que la bdd se suppr également)
+        run: sleep 30
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
       - name: Terraform Init
