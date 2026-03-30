@@ -62,7 +62,7 @@ resource "render_web_service" "adminer" {
 
   env_vars = {
     ADMINER_DEFAULT_SERVER = {
-      value = "${render_postgres.database.id}.internal"
+      value = "${render_postgres.database.id}"
     }
   }
 }

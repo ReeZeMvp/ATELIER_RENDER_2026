@@ -11,10 +11,6 @@ def home():
 def health():
     return {"status": "Tout est ok ou pas"}
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
-
 @app.route("/info")
 def info():
     return {
@@ -30,3 +26,7 @@ def env():
 @app.route("/db")
 def db_check():
     return {"database_url_set": bool(os.getenv("DATABASE_URL"))} # Pour débug et check si la DB_URL est OK
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
