@@ -55,7 +55,8 @@ resource "render_web_service" "adminer" {
 
   runtime_source = {
     image = {
-      image_url = "docker.io/adminer:latest"
+      image_url = "docker.io/adminer"
+      tag = "latest"
     }
   }
 
