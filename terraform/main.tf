@@ -47,3 +47,21 @@ resource "render_postgres" "database" {
   database_name = "appdb"
   database_user = "appuser"
 }
+
+resource "render_web_service" "adminer" {
+  name       = "adminer-${var.github_actor}"
+  plan       = "free"
+  region     = "frankfurt"
+
+  runtime_source = {
+    image = {
+      image_url = "docker.io/adminer:latest"
+    }
+  }
+
+  env_vars = {
+    ADMINER_DEFAULT_SERVER = {
+      value = render_postgres.database.connection_info.host
+    }
+  }
+}
