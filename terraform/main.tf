@@ -33,5 +33,17 @@ resource "render_web_service" "flask_app" {
     ENV = {
       value = "production"
     }
+    DATABASE_URL = {
+      value = render_postgres.database.connection_info.internal_connection_string
+    }
   }
+}
+
+resource "render_postgres" "database" {
+  name          = "flask-postgres-${var.github_actor}"
+  plan          = "free"
+  region        = "frankfurt"
+  version       = "16"
+  database_name = "appdb"
+  database_user = "appuser"
 }

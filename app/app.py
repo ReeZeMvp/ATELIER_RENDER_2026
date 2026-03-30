@@ -26,3 +26,7 @@ def info():
 @app.route("/env")
 def env():
     return {"env": os.getenv("ENV")}
+
+@app.route("/db")
+def db_check():
+    return {"database_url_set": bool(os.getenv("DATABASE_URL"))} # Pour débug et check si la DB_URL est OK
